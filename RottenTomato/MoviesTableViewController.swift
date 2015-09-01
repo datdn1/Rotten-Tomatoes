@@ -44,7 +44,7 @@ class MoviesTableViewController: UIViewController,UITableViewDelegate, UITableVi
     
     var currentSelectedTabbarItem:UITabBarItem!
     
-    var searching:Bool!
+    var searching:Bool! = false
     
     @IBOutlet weak var movieTableView: UITableView!
     
@@ -128,11 +128,15 @@ class MoviesTableViewController: UIViewController,UITableViewDelegate, UITableVi
     }
 
      func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let search = searching
+//        if let search = searching
+//        {
+//            if search{
+//                return filterMovies.count
+//            }
+//        }
+        if (searching!)
         {
-            if search{
-                return filterMovies.count
-            }
+           return filterMovies.count
         }
         return movies.count
     }
@@ -140,14 +144,18 @@ class MoviesTableViewController: UIViewController,UITableViewDelegate, UITableVi
      func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         var moviesAtCell:NSDictionary? = nil
-        if let search = searching
+//        if let search = searching
+//        {
+//            if search{
+//                moviesAtCell = filterMovies.objectAtIndex(indexPath.row) as? NSDictionary
+//            }
+//        }
+        if (searching!)
         {
-            if search{
-                moviesAtCell = filterMovies.objectAtIndex(indexPath.row) as? NSDictionary
-            }
+            moviesAtCell = filterMovies.objectAtIndex(indexPath.row) as? NSDictionary
         }
         else {
-            moviesAtCell = movies.objectAtIndex(indexPath.row) as! NSDictionary
+            moviesAtCell = movies.objectAtIndex(indexPath.row) as? NSDictionary
         }
         cell.titleMovie.text = moviesAtCell!["title"] as? String
         cell.synosysMovie.text = moviesAtCell!["synopsis"] as? String
@@ -294,16 +302,30 @@ class MoviesTableViewController: UIViewController,UITableViewDelegate, UITableVi
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if (searching!)
+        {
+            return filterMovies.count
+        }
         return self.movies.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionMovieCell", forIndexPath: indexPath) as! MovieCollectionCell
         
-        let moviesAtCell = movies.objectAtIndex(indexPath.row) as! NSDictionary
-        cell.titleMovie.text = moviesAtCell["title"] as? String
+//        let moviesAtCell = movies.objectAtIndex(indexPath.row) as! NSDictionary
+        var moviesAtCell:NSDictionary? = nil
         
-        let posterObject = moviesAtCell["posters"] as! NSDictionary
+        if (searching!)
+        {
+            moviesAtCell = filterMovies.objectAtIndex(indexPath.row) as? NSDictionary
+        }
+        else {
+            moviesAtCell = movies.objectAtIndex(indexPath.row) as? NSDictionary
+        }
+        
+        cell.titleMovie.text = moviesAtCell!["title"] as? String
+        
+        let posterObject = moviesAtCell!["posters"] as! NSDictionary
         let thumbnail = posterObject["thumbnail"] as? String
         
         cell.posterImage.setImageWithURL(NSURL(string: thumbnail!)!)
@@ -312,9 +334,9 @@ class MoviesTableViewController: UIViewController,UITableViewDelegate, UITableVi
         // load asynsonos poster image
         cell.posterImage.setImageWithURL(NSURL(string: posterImageUrl)!)
         
-        cell.mpaaRating.text = moviesAtCell["mpaa_rating"] as? String
-        cell.timeMovie.text = String((moviesAtCell["runtime"] as! Int)) + " min"
-        cell.audienceScore.text = String((moviesAtCell.valueForKeyPath("ratings.audience_score") as! Int)) + "%"
+        cell.mpaaRating.text = moviesAtCell!["mpaa_rating"] as? String
+        cell.timeMovie.text = String((moviesAtCell!["runtime"] as! Int)) + " min"
+        cell.audienceScore.text = String((moviesAtCell!.valueForKeyPath("ratings.audience_score") as! Int)) + "%"
         return cell
     }
     
@@ -370,13 +392,14 @@ class MoviesTableViewController: UIViewController,UITableViewDelegate, UITableVi
     
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
         self.searching = false
+        updateMovie(success: true, withError: nil)
     }
     
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         self.searching = false
         searchBar.text = ""
         searchBar.resignFirstResponder()
-        updateMovie(success: true, withError: nil)
+//        updateMovie(success: true, withError: nil)
     }
 
 }
