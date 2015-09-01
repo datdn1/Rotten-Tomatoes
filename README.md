@@ -1,7 +1,7 @@
 <h2>Rotten Tomatoes</h2>
 This is a movies app displaying box office and top rental DVDs using the Rotten Tomatoes API.
 
-Time spent: 12h
+Time spent: 13h
 
 <h3>Features</h3>
 <h4>Required</h4>
@@ -22,7 +22,7 @@ Time spent: 12h
 
 [x] Add a tab bar for Box Office and DVD.
 
-[x] Add a search bar: just complete the search on tabview, incomplete on collection view. But it has error after search
+[x] Add a search bar: complete the search on tabview and on collection view. But it has error after click cell on search result.
 
 <h3>Walkthrough<h3>
 <img src="/RottenTato-Wa.gif">
